@@ -1,4 +1,4 @@
-import { Box, Link } from '@mui/material'
+import { Box, Link, IconButton, Typography } from '@mui/material'
 import EmailIcon from '@mui/icons-material/Email'
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import WhatsAppIcon from '@mui/icons-material/WhatsApp'
@@ -12,20 +12,32 @@ const footerLinks = [
 ]
 
 const socialIcons = [
-  { icon: <EmailIcon />, href: 'mailto:contact@trackerteam.com' },
-  { icon: <LinkedInIcon />, href: 'https://linkedin.com' },
-  { icon: <WhatsAppIcon />, href: 'https://wa.me/0000000000' },
-  { icon: <FacebookIcon />, href: 'https://facebook.com' },
+  { icon: <EmailIcon sx={{ fontSize: 35 }} />, href: 'mailto:contact@trackerteam.com' },
+  { icon: <LinkedInIcon sx={{ fontSize: 35 }} />, href: 'https://linkedin.com' },
+  { icon: <WhatsAppIcon sx={{ fontSize: 35 }} />, href: 'https://wa.me/0000000000' },
+  { icon: <FacebookIcon sx={{ fontSize: 35 }} />, href: 'https://facebook.com' },
 ]
 
 function Footer() {
   const navigate = useNavigate()
 
   return (
-    <Box component="footer" sx={{ backgroundColor: '#070126' }} className="mt-16">
-      <div className="flex flex-col md:flex-row justify-between gap-8 px-8 py-10 max-w-6xl mx-auto">
-        {/* Colonne des liens */}
-        <div className="flex flex-col gap-2">
+    <Box component="footer" sx={{ backgroundColor: '#070126' }}>
+      <Box
+        sx={{
+          maxWidth: 1440,
+          mx: 'auto',
+          display: 'flex',
+          flexDirection: { xs: 'column', md: 'row' },
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          gap: 4,
+          px: { xs: 4, md: 8 },
+          py: { xs: 2, md: 3 },
+          minHeight: 181,
+        }}
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {footerLinks.map((link) => (
             <Link
               key={link.label}
@@ -33,36 +45,56 @@ function Footer() {
               onClick={() => navigate(link.path)}
               underline="hover"
               color="inherit"
-              className="text-left"
+              sx={{
+                textAlign: 'left',
+                fontSize: 20,
+                fontWeight: 400,
+                textTransform: 'none',
+                px: 0,
+              }}
             >
               {link.label}
             </Link>
           ))}
-        </div>
+        </Box>
 
-        {/* Colonne contact */}
-        <div className="flex flex-col gap-3 md:items-end">
-          <span className="font-semibold text-white">Contact us</span>
-          <div className="flex gap-3">
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, alignItems: { xs: 'flex-start', md: 'flex-start' } }}>
+          <Typography sx={{ fontSize: 20, fontWeight: 600, color: '#FFFFFF', textAlign: 'left' }}>
+            Contact us
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
             {socialIcons.map((social, index) => (
-              <a
+              <Box
                 key={index}
+                component="a"
                 href={social.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-white hover:opacity-70 transition-opacity"
+                sx={{
+                  display: 'inline-flex',
+                  width: 35,
+                  height: 35,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#FFFFFF',
+                  textDecoration: 'none',
+                  '&:hover': {
+                    opacity: 0.8,
+                  },
+                }}
               >
                 {social.icon}
-              </a>
+              </Box>
             ))}
-          </div>
-        </div>
-      </div>
+          </Box>
+        </Box>
+      </Box>
 
-      {/* Copyright */}
-      <div className="text-center pb-6 text-sm text-gray-300">
-        Copyright © {new Date().getFullYear()} All rights reserved
-      </div>
+      <Box sx={{ py: 0.5 }}>
+        <Typography sx={{ fontSize: 20, textAlign: 'center', color: 'rgba(255,255,255,0.7)' }}>
+          Copyright © {new Date().getFullYear()} All rights reserved
+        </Typography>
+      </Box>
     </Box>
   )
 }
