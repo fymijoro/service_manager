@@ -1,1 +1,39 @@
 @import "tailwindcss";
+
+/* Local font-face definitions — place WOFF2 files in /public/fonts */
+@font-face {
+	font-family: 'Roboto Slab';
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url('/fonts/RobotoSlab-Light.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'Roboto Slab';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/RobotoSlab-Regular.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'Roboto Slab';
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/RobotoSlab-Medium.woff2') format('woff2');
+}
+@font-face {
+	font-family: 'Roboto Slab';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/RobotoSlab-Bold.woff2') format('woff2');
+}
+
+html, body, #root {
+	height: 100%;
+}
+
+body {
+	font-family: 'Roboto Slab', serif;
+}

@@ -59,6 +59,7 @@ function Navbar() {
                 key={link.label}
                 startIcon={link.icon}
                 color="inherit"
+                sx={{ textTransform: 'none' }}
                 onClick={() => handleNavigate(link.path)}
               >
                 {link.label}
@@ -93,7 +94,10 @@ function Navbar() {
                     <ListItemIcon sx={{ color: 'inherit' }}>
                       {link.icon}
                     </ListItemIcon>
-                    <ListItemText primary={link.label} />
+                    <ListItemText
+                      primary={link.label}
+                      primaryTypographyProps={{ sx: { textTransform: 'none' } }}
+                    />
                   </ListItemButton>
                 </ListItem>
                 {index < navLinks.length - 1 && (

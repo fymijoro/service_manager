@@ -24,4 +24,16 @@ export const muiTheme = createTheme({
   shape: {
     borderRadius: 10,
   },
+  typography: {
+    fontFamily: '"Roboto Slab", serif',
+  },
+  components: {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          fontFamily: '"Roboto Slab", serif',
+        },
+      },
+    },
+  },
 })
