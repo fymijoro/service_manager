@@ -33,8 +33,8 @@ function Footer() {
           alignItems: 'flex-start',
           gap: 4,
           px: { xs: 4, md: 8 },
-          py: { xs: 2, md: 3 },
-          minHeight: 181,
+          py: { xs: 1.5, md: 2 },
+          minHeight: 150,
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -90,7 +90,7 @@ function Footer() {
         </Box>
       </Box>
 
-      <Box sx={{ py: 0.5 }}>
+      <Box sx={{ py: 0.25 }}>
         <Typography sx={{ fontSize: 20, textAlign: 'center', color: 'rgba(255,255,255,0.7)' }}>
           Copyright © {new Date().getFullYear()} All rights reserved
         </Typography>
