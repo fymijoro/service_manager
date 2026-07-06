@@ -13,6 +13,8 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Backdrop,          // ← Ajouté pour l'overlay de chargement
+  CircularProgress,  // ← Ajouté pour l'icône de chargement de l'API MUI
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import DashboardIcon from '@mui/icons-material/Dashboard'
@@ -26,16 +28,27 @@ const navLinks = [
   { label: 'Dashboard', icon: <DashboardIcon />, path: '/' },
   { label: 'Manage account', icon: <PersonIcon />, path: '/manage-account' },
   { label: 'About', icon: <InfoIcon />, path: '/about' },
-  { label: 'Logout', icon: <LogoutIcon />, path: '/login' },
+  { label: 'Logout', icon: <LogoutIcon />, path: '/login', isLogout: true },
 ]
 
-function Navbar() {
+function Navbar({ onLogout }) {
   const navigate = useNavigate()
   const location = useLocation()
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [isLoggingOut, setIsLoggingOut] = useState(false) // ← État pour gérer le chargement de déconnexion
 
-  const handleNavigate = (path) => {
-    navigate(path)
+  const handleNavigate = (link) => {
+    if (link.isLogout) {
+      setIsLoggingOut(true) // On active l'overlay de chargement
+      
+      // Petit délai de 1.5s pour un effet visuel fluide avant la redirection
+      setTimeout(() => {
+        onLogout()          
+        navigate('/login')  
+      }, 1500)
+    } else {
+      navigate(link.path)
+    }
     setDrawerOpen(false)
   }
 
@@ -43,6 +56,21 @@ function Navbar() {
 
   return (
     <>
+      {/* Écran de chargement plein écran pendant la déconnexion */}
+      <Backdrop
+        sx={{ 
+          color: '#fff', 
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          background: 'rgba(5, 10, 36, 0.8)' // Teinte sombre accordée à ton thème
+        }}
+        open={isLoggingOut}
+      >
+        <div className="flex flex-col items-center gap-4">
+          <CircularProgress color="inherit" />
+          <span className="text-lg font-semibold tracking-wide">Déconnexion en cours...</span>
+        </div>
+      </Backdrop>
+
       <AppBar
         position="static"
         elevation={0}
@@ -56,28 +84,28 @@ function Navbar() {
             <ScreenSearchDesktopIcon />
             TRACKER TEAM
           </Box>
-
           <Box sx={{ display: { xs: 'none', md: 'flex' } }} gap={1}>
             {navLinks.map((link) => (
               <Button
                 key={link.label}
                 startIcon={link.icon}
                 color="inherit"
+                disabled={isLoggingOut} // Désactive les boutons pendant la déconnexion
                 sx={{
                   textTransform: 'none',
                   fontWeight: isActive(link.path) ? '700' : '400',
                   fontSize: isActive(link.path) ? '1.05rem' : '1rem',
                 }}
-                onClick={() => handleNavigate(link.path)}
+                onClick={() => handleNavigate(link)}
               >
                 {link.label}
               </Button>
             ))}
           </Box>
-
           <IconButton
             sx={{ display: { xs: 'inline-flex', md: 'none' } }}
             color="inherit"
+            disabled={isLoggingOut}
             onClick={() => setDrawerOpen(true)}
           >
             <MenuIcon />
@@ -98,7 +126,11 @@ function Navbar() {
             {navLinks.map((link, index) => (
               <div key={link.label}>
                 <ListItem disablePadding>
-                  <ListItemButton onClick={() => handleNavigate(link.path)}>
+                  <ListItemButton 
+                    onClick={() => handleNavigate(link)}
+                    disabled={isLoggingOut}
+                    sx={{ color: 'white' }}
+                  >
                     <ListItemIcon sx={{ color: 'inherit' }}>
                       {link.icon}
                     </ListItemIcon>
