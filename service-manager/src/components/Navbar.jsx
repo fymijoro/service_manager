@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import {
   AppBar,
   Toolbar,
@@ -18,7 +19,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard'
 import PersonIcon from '@mui/icons-material/Person'
 import InfoIcon from '@mui/icons-material/Info'
 import LogoutIcon from '@mui/icons-material/Logout'
-import ShowChartIcon from '@mui/icons-material/ShowChart'
+import ScreenSearchDesktopIcon from '@mui/icons-material/ScreenSearchDesktop'
 import { useNavigate } from 'react-router-dom'
 
 const navLinks = [
@@ -30,12 +31,15 @@ const navLinks = [
 
 function Navbar() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [drawerOpen, setDrawerOpen] = useState(false)
 
   const handleNavigate = (path) => {
     navigate(path)
     setDrawerOpen(false)
   }
+
+  const isActive = (path) => location.pathname === path
 
   return (
     <>
@@ -49,7 +53,7 @@ function Navbar() {
       >
         <Toolbar className="flex justify-between">
           <Box className="flex items-center gap-2 font-bold text-lg">
-            <ShowChartIcon />
+            <ScreenSearchDesktopIcon />
             TRACKER TEAM
           </Box>
 
@@ -59,7 +63,11 @@ function Navbar() {
                 key={link.label}
                 startIcon={link.icon}
                 color="inherit"
-                sx={{ textTransform: 'none' }}
+                sx={{
+                  textTransform: 'none',
+                  fontWeight: isActive(link.path) ? '700' : '400',
+                  fontSize: isActive(link.path) ? '1.05rem' : '1rem',
+                }}
                 onClick={() => handleNavigate(link.path)}
               >
                 {link.label}
@@ -96,7 +104,13 @@ function Navbar() {
                     </ListItemIcon>
                     <ListItemText
                       primary={link.label}
-                      primaryTypographyProps={{ sx: { textTransform: 'none' } }}
+                      primaryTypographyProps={{
+                        sx: {
+                          textTransform: 'none',
+                          fontWeight: isActive(link.path) ? '700' : '400',
+                          fontSize: isActive(link.path) ? '1.05rem' : '1rem',
+                        },
+                      }}
                     />
                   </ListItemButton>
                 </ListItem>
