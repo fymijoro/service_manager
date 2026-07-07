@@ -31,13 +31,13 @@ function Footer() {
           flexDirection: { xs: 'column', md: 'row' },
           justifyContent: 'space-between',
           alignItems: 'flex-start',
-          gap: 2,
+          gap: 1,
           px: { xs: 4, md: 8 },
-          py: { xs: 0.75, md: 1 },
-          minHeight: 120,
+          py: { xs: 0.5, md: 0.75 },
+          minHeight: 80,
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
           {footerLinks.map((link) => (
             <Link
               key={link.label}
@@ -47,10 +47,12 @@ function Footer() {
               color="inherit"
               sx={{
                 textAlign: 'left',
-                fontSize: 20,
-                fontWeight: 400,
+                fontSize: 16,
+                lineHeight: 1.2,
+                fontWeight: 700,
                 textTransform: 'none',
                 px: 0,
+                py: 0.25,
               }}
             >
               {link.label}
@@ -90,8 +92,8 @@ function Footer() {
         </Box>
       </Box>
 
-      <Box sx={{ py: 0.25 }}>
-        <Typography sx={{ fontSize: 20, textAlign: 'center', color: 'rgba(255,255,255,0.7)' }}>
+      <Box sx={{ py: 0.15 }}>
+        <Typography sx={{ fontSize: 20, lineHeight: 1.3, textAlign: 'center', color: 'rgba(255,255,255,0.7)' }}>
           Copyright © {new Date().getFullYear()} All rights reserved
         </Typography>
       </Box>
