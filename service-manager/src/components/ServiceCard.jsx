@@ -30,6 +30,8 @@ function ServiceCard({ service, onRestart, onStop, onStart, isRestarting }) {
         p: 3,
         display: 'flex',
         flexDirection: 'column',
+        justifyContent: 'space-between',
+        height: '100%',
         gap: 1.5,
         transition: 'transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease',
         '&:hover': {
@@ -48,32 +50,32 @@ function ServiceCard({ service, onRestart, onStop, onStart, isRestarting }) {
             {description}
           </Typography>
 
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, color: '#B0B7C3', fontSize: 13, mt: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, color: '#B0B7C3', fontSize: 13, mt: 1, lineHeight: 1.2 }}>
             <Typography component="span" sx={{ color: '#FFFFFF', fontWeight: 700, minWidth: '72px' }}>
               Loaded:
             </Typography>
-            <Typography component="span">
+            <Typography component="span" sx={{ lineHeight: 1.2 }}>
               <b style={{ color: '#FFFFFF' }}>loaded</b> (/usr/lib/systemd/system/{unit}.service; {enabledPreset}; vendor preset: enabled)
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, color: '#B0B7C3', fontSize: 13 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, color: '#B0B7C3', fontSize: 13, lineHeight: 1.2 }}>
             <Typography component="span" sx={{ color: '#FFFFFF', fontWeight: 700, minWidth: '72px' }}>
               Active:
             </Typography>
-            <Typography component="span">
+            <Typography component="span" sx={{ lineHeight: 1.2 }}>
               <b style={{ color: '#FFFFFF' }}>{ACTIVE_LABELS[displayStatus]}</b>
               {displayStatus !== 'stopped' && (
                 <> since {formatDateTime(startedAt)} EAT; {formatRelativeTime(startedAt)}</>
               )}
             </Typography>
           </Box>
-          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, color: '#B0B7C3', fontSize: 13 }}>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, color: '#B0B7C3', fontSize: 13, lineHeight: 1.2 }}>
             <Typography component="span" sx={{ color: '#FFFFFF', fontWeight: 700, minWidth: '72px' }}>
               Docs:
             </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-              <Typography component="span">man:{docsCmd}(8)</Typography>
-              <Typography component="span">man:{docsCmd}_config(5)</Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.2, lineHeight: 1.2 }}>
+              <Typography component="span" sx={{ lineHeight: 1.2 }}>man:{docsCmd}(8)</Typography>
+              <Typography component="span" sx={{ lineHeight: 1.2 }}>man:{docsCmd}_config(5)</Typography>
             </Box>
           </Box>
         </Box>

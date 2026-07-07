@@ -15,8 +15,8 @@ function Dashboard() {
   const stopped = services.filter((s) => s.status === 'stopped').length
 
   const filteredServices = useMemo(() => {
-    if (filter === 'all') return services
-    return services.filter((s) => s.status === filter)
+    const list = filter === 'all' ? services : services.filter((s) => s.status === filter)
+    return [...list].sort((a, b) => a.name.localeCompare(b.name))
   }, [services, filter])
 
   const updateStatus = (id, status) => {
@@ -37,7 +37,7 @@ function Dashboard() {
   }
 
   return (
-    <div className="p-8 flex flex-col items-center">
+    <div className="py-8 px-4 flex flex-col items-center">
       <TypewriterTitle />
       <StatsSummary
         total={total}

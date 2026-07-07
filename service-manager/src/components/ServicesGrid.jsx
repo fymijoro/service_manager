@@ -7,7 +7,7 @@ function ServicesGrid({ services, onRestart, onStop, onStart, restartingId }) {
       sx={{
         display: 'grid',
         gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
-        gap: 3,
+        gap: { xs: 4, md: 5 },
       }}
     >
       {services.map((service) => (
