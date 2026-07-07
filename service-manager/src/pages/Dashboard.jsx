@@ -20,7 +20,9 @@ function Dashboard() {
   }, [services, filter])
 
   const updateStatus = (id, status) => {
-    setServices((prev) => prev.map((s) => (s.id === id ? { ...s, status } : s)))
+    setServices((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, status, startedAt: new Date() } : s))
+    )
   }
 
   const handleStop = (id) => updateStatus(id, 'stopped')

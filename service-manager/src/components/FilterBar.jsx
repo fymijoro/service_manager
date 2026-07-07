@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Box, Typography, Menu, MenuItem } from '@mui/material'
+import { Box, Typography, Menu, MenuItem, Divider } from '@mui/material'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 
 const FILTER_LABELS = {
@@ -11,6 +11,7 @@ const FILTER_LABELS = {
 function FilterBar({ filter, onFilterChange }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
+  const entries = Object.entries(FILTER_LABELS)
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1.5, mb: 2 }}>
@@ -23,7 +24,7 @@ function FilterBar({ filter, onFilterChange }) {
           alignItems: 'center',
           gap: 1,
           border: '1px solid #3B82F6',
-          borderRadius: '999px',
+          borderRadius: 0,           // ← carré
           color: '#FFFFFF',
           background: '#0F1730',
           px: 2.5,
@@ -50,29 +51,33 @@ function FilterBar({ filter, onFilterChange }) {
               mt: 1,
               background: '#0F1730',
               border: '1px solid #3B82F6',
-              borderRadius: '12px',
+              borderRadius: 0,       // ← carré
               color: '#FFFFFF',
               minWidth: 160,
             },
           },
         }}
       >
-        {Object.entries(FILTER_LABELS).map(([value, label]) => (
-          <MenuItem
-            key={value}
-            selected={value === filter}
-            onClick={() => {
-              onFilterChange(value)
-              setAnchorEl(null)
-            }}
-            sx={{
-              fontWeight: value === filter ? 700 : 400,
-              '&.Mui-selected': { background: 'rgba(59, 130, 246, 0.15)' },
-              '&:hover': { background: 'rgba(59, 130, 246, 0.1)' },
-            }}
-          >
-            {label}
-          </MenuItem>
+        {entries.map(([value, label], index) => (
+          <div key={value}>
+            <MenuItem
+              selected={value === filter}
+              onClick={() => {
+                onFilterChange(value)
+                setAnchorEl(null)
+              }}
+              sx={{
+                fontWeight: value === filter ? 700 : 400,
+                '&.Mui-selected': { background: 'rgba(59, 130, 246, 0.15)' },
+                '&:hover': { background: 'rgba(59, 130, 246, 0.1)' },
+              }}
+            >
+              {label}
+            </MenuItem>
+            {index < entries.length - 1 && (
+              <Divider sx={{ borderColor: 'rgba(255,255,255,0.15)' }} />
+            )}
+          </div>
         ))}
       </Menu>
     </Box>

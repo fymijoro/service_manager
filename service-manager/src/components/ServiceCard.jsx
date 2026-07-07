@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material'
 import ServiceLogo from './ServiceLogo.jsx'
 import ServiceStatusBadge from './ServiceStatusBadge.jsx'
 import ServiceActionsMenu from './ServiceActionsMenu.jsx'
+import { formatDateTime, formatRelativeTime } from '../utils/dateUtils.js'
 
 const hangingIndentSx = {
   color: '#B0B7C3',
@@ -10,8 +11,15 @@ const hangingIndentSx = {
   textIndent: '-52px',
 }
 
+const ACTIVE_LABELS = {
+  running: 'active (running)',
+  stopped: 'inactive (dead)',
+  restarting: 'activating (auto-restart)',
+}
+
 function ServiceCard({ service, onRestart, onStop, onStart, isRestarting }) {
-  const { name, unit, code, docsCmd, description, status } = service
+  const { name, unit, code, docsCmd, description, status, enabledPreset, startedAt } = service
+  const displayStatus = isRestarting ? 'restarting' : status
 
   return (
     <Box
@@ -41,24 +49,23 @@ function ServiceCard({ service, onRestart, onStop, onStart, isRestarting }) {
           </Typography>
 
           <Typography sx={{ ...hangingIndentSx, mt: 1 }}>
-            Loaded: <b style={{ color: '#FFFFFF' }}>loaded</b> (/usr/lib/systemd/system/{unit}.service; disabled; preset: enabled)
+            Loaded: <b style={{ color: '#FFFFFF' }}>loaded</b> (/usr/lib/systemd/system/{unit}.service; {enabledPreset}; vendor preset: enabled)
           </Typography>
           <Typography sx={hangingIndentSx}>
-            Active: {status === 'running' ? (
-              <b style={{ color: '#FFFFFF' }}>active (running)</b>
-            ) : (
-              <b style={{ color: '#FFFFFF' }}>inactive (dead)</b>
-            )} since Tue 2026-06-23 11:43:35 EAT; 1s ago
+            Active: <b style={{ color: '#FFFFFF' }}>{ACTIVE_LABELS[displayStatus]}</b>
+            {displayStatus !== 'stopped' && (
+              <> since {formatDateTime(startedAt)} EAT; {formatRelativeTime(startedAt)}</>
+            )}
           </Typography>
           <Typography sx={hangingIndentSx}>
-            Docs: man:{docsCmd}(8); man:{docsCmd}_config(5)
+            Docs: man:{docsCmd}(8)<br />man:{docsCmd}_config(5)
           </Typography>
         </Box>
         <ServiceLogo code={code} />
       </Box>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 1 }}>
-        <ServiceStatusBadge status={isRestarting ? 'restarting' : status} />
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 1 }}>
+        <ServiceStatusBadge status={displayStatus} />
         <ServiceActionsMenu
           status={status}
           onRestart={() => onRestart(service.id)}

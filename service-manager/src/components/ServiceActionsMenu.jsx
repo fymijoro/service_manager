@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { IconButton, Menu, MenuItem } from '@mui/material'
+import { IconButton, Menu, MenuItem, Divider } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 
 function ServiceActionsMenu({ status, onRestart, onStop, onStart }) {
@@ -10,6 +10,11 @@ function ServiceActionsMenu({ status, onRestart, onStop, onStart }) {
     setAnchorEl(null)
     action()
   }
+
+  const secondAction =
+    status === 'running'
+      ? { label: 'Stop', handler: onStop, hoverColor: 'rgba(221, 69, 21, 0.15)' }
+      : { label: 'Start', handler: onStart, hoverColor: 'rgba(20, 164, 48, 0.15)' }
 
   return (
     <>
@@ -28,7 +33,7 @@ function ServiceActionsMenu({ status, onRestart, onStop, onStart }) {
               mt: 0.5,
               background: '#0F1730',
               border: '1px solid #3B82F6',
-              borderRadius: '10px',
+              borderRadius: 0,
               color: '#FFFFFF',
               minWidth: 120,
             },
@@ -41,21 +46,13 @@ function ServiceActionsMenu({ status, onRestart, onStop, onStart }) {
         >
           Restart
         </MenuItem>
-        {status === 'running' ? (
-          <MenuItem
-            onClick={() => handleAction(onStop)}
-            sx={{ '&:hover': { background: 'rgba(221, 69, 21, 0.15)' } }}
-          >
-            Stop
-          </MenuItem>
-        ) : (
-          <MenuItem
-            onClick={() => handleAction(onStart)}
-            sx={{ '&:hover': { background: 'rgba(20, 164, 48, 0.15)' } }}
-          >
-            Start
-          </MenuItem>
-        )}
+        <Divider sx={{ borderColor: 'rgba(255,255,255,0.15)' }} />
+        <MenuItem
+          onClick={() => handleAction(secondAction.handler)}
+          sx={{ '&:hover': { background: secondAction.hoverColor } }}
+        >
+          {secondAction.label}
+        </MenuItem>
       </Menu>
     </>
   )
