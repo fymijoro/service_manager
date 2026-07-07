@@ -2,9 +2,10 @@ import { Box, Typography } from '@mui/material'
 
 const GRADIENT = 'linear-gradient(90deg, #050A24 0%, #0F1D5A 50%, #050A24 100%)'
 
-function StatCard({ label, value, accentColor }) {
+function StatCard({ label, value, accentColor, onClick, isActive }) {
   return (
     <Box
+      onClick={onClick}
       sx={{
         width: { xs: '100%', md: '228px' },
         maxWidth: '228px',
@@ -12,7 +13,7 @@ function StatCard({ label, value, accentColor }) {
         flexShrink: 1,
         background: GRADIENT,
         border: `1px solid ${accentColor}`,
-        boxShadow: `0 0 12px ${accentColor}55`,
+        boxShadow: isActive ? `0 0 16px ${accentColor}` : `0 0 12px ${accentColor}55`,
         borderRadius: '10px',
         display: 'flex',
         alignItems: 'center',
@@ -20,12 +21,11 @@ function StatCard({ label, value, accentColor }) {
         gap: 1,
         px: 2,
         overflow: 'hidden',
+        cursor: 'pointer',
+        transition: 'box-shadow 0.2s ease',
       }}
     >
-      <Typography
-        noWrap
-        sx={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}
-      >
+      <Typography noWrap sx={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>
         {label}
       </Typography>
       <Typography sx={{ fontSize: 32, fontWeight: 700, color: accentColor, lineHeight: 1, flexShrink: 0 }}>

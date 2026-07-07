@@ -29,7 +29,7 @@ const teamMembers = [
     name: "LAHATRINIAVO",
     firstname: "Fy Mijoro",
     im: "3447", 
-    email: "lfmijoro@gmail.com",
+    email: "fymijoro@gmail.com",
     phone: "+261 38 32 141 34",
     linkedin: "Fy Mijoro LAHATRINIAVO",
     image: "src/images/lahatra.jpeg" 
