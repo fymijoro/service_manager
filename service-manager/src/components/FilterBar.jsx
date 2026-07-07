@@ -15,7 +15,7 @@ function FilterBar({ filter, onFilterChange }) {
 
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1.5, mb: 2 }}>
-      <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Filter by</Typography>
+      <Typography sx={{ color: '#FFFFFF', fontWeight: 700, lineHeight: 1, height: '36px', display: 'flex', alignItems: 'center', m: 0 }}>Filter by</Typography>
 
       <Box
         onClick={(e) => setAnchorEl(e.currentTarget)}
@@ -24,11 +24,11 @@ function FilterBar({ filter, onFilterChange }) {
           alignItems: 'center',
           gap: 1,
           border: '1px solid #3B82F6',
-          borderRadius: 0,           // ← carré
+          borderRadius: 0,
           color: '#FFFFFF',
           background: '#0F1730',
           px: 2.5,
-          py: 0.75,
+          height: '36px',
           fontWeight: 700,
           fontSize: 14,
           cursor: 'pointer',
@@ -51,7 +51,7 @@ function FilterBar({ filter, onFilterChange }) {
               mt: 1,
               background: '#0F1730',
               border: '1px solid #3B82F6',
-              borderRadius: 0,       // ← carré
+              borderRadius: 0,
               color: '#FFFFFF',
               minWidth: 160,
             },
@@ -68,14 +68,14 @@ function FilterBar({ filter, onFilterChange }) {
               }}
               sx={{
                 fontWeight: value === filter ? 700 : 400,
-                '&.Mui-selected': { background: 'rgba(59, 130, 246, 0.15)' },
-                '&:hover': { background: 'rgba(59, 130, 246, 0.1)' },
+                '&.Mui-selected': { background: 'rgba(59, 130, 246, 0.18)' },
+                '&:hover': { background: 'rgba(59, 130, 246, 0.12)' },
               }}
             >
               {label}
             </MenuItem>
             {index < entries.length - 1 && (
-              <Divider sx={{ borderColor: 'rgba(255,255,255,0.15)' }} />
+              <Divider sx={{ borderColor: '#3B82F6' }} />
             )}
           </div>
         ))}

@@ -18,14 +18,23 @@ function ServiceActionsMenu({ status, onRestart, onStop, onStart }) {
 
   return (
     <>
-      <IconButton onClick={(e) => setAnchorEl(e.currentTarget)} sx={{ color: '#FFFFFF' }}>
-        <SettingsIcon />
+      <IconButton
+        onClick={(e) => setAnchorEl(e.currentTarget)}
+        sx={{
+          color: '#FFFFFF',
+          p: 1,
+          borderRadius: '12px',
+          bgcolor: 'rgba(255,255,255,0.06)',
+          '&:hover': { bgcolor: 'rgba(59,130,246,0.18)' },
+        }}
+      >
+        <SettingsIcon sx={{ fontSize: 24 }} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
         open={open}
         onClose={() => setAnchorEl(null)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'left' }}
         slotProps={{
           paper: {
@@ -33,23 +42,34 @@ function ServiceActionsMenu({ status, onRestart, onStop, onStart }) {
               mt: 0.5,
               background: '#0F1730',
               border: '1px solid #3B82F6',
-              borderRadius: 0,
+              borderRadius: '12px',
               color: '#FFFFFF',
-              minWidth: 120,
+              minWidth: 140,
+              overflow: 'hidden',
             },
           },
         }}
       >
         <MenuItem
           onClick={() => handleAction(onRestart)}
-          sx={{ '&:hover': { background: 'rgba(59, 130, 246, 0.1)' } }}
+          sx={{
+            pl: 3,
+            pr: 3,
+            borderRadius: '10px',
+            '&:hover': { background: 'rgba(59, 130, 246, 0.12)' },
+          }}
         >
           Restart
         </MenuItem>
-        <Divider sx={{ borderColor: 'rgba(255,255,255,0.15)' }} />
+        <Divider sx={{ borderColor: '#3B82F6' }} />
         <MenuItem
           onClick={() => handleAction(secondAction.handler)}
-          sx={{ '&:hover': { background: secondAction.hoverColor } }}
+          sx={{
+            pl: 3,
+            pr: 3,
+            borderRadius: '10px',
+            '&:hover': { background: secondAction.hoverColor },
+          }}
         >
           {secondAction.label}
         </MenuItem>

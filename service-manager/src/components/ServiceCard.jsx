@@ -48,18 +48,34 @@ function ServiceCard({ service, onRestart, onStop, onStart, isRestarting }) {
             {description}
           </Typography>
 
-          <Typography sx={{ ...hangingIndentSx, mt: 1 }}>
-            Loaded: <b style={{ color: '#FFFFFF' }}>loaded</b> (/usr/lib/systemd/system/{unit}.service; {enabledPreset}; vendor preset: enabled)
-          </Typography>
-          <Typography sx={hangingIndentSx}>
-            Active: <b style={{ color: '#FFFFFF' }}>{ACTIVE_LABELS[displayStatus]}</b>
-            {displayStatus !== 'stopped' && (
-              <> since {formatDateTime(startedAt)} EAT; {formatRelativeTime(startedAt)}</>
-            )}
-          </Typography>
-          <Typography sx={hangingIndentSx}>
-            Docs: man:{docsCmd}(8)<br />man:{docsCmd}_config(5)
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, color: '#B0B7C3', fontSize: 13, mt: 1 }}>
+            <Typography component="span" sx={{ color: '#FFFFFF', fontWeight: 700, minWidth: '72px' }}>
+              Loaded:
+            </Typography>
+            <Typography component="span">
+              <b style={{ color: '#FFFFFF' }}>loaded</b> (/usr/lib/systemd/system/{unit}.service; {enabledPreset}; vendor preset: enabled)
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, color: '#B0B7C3', fontSize: 13 }}>
+            <Typography component="span" sx={{ color: '#FFFFFF', fontWeight: 700, minWidth: '72px' }}>
+              Active:
+            </Typography>
+            <Typography component="span">
+              <b style={{ color: '#FFFFFF' }}>{ACTIVE_LABELS[displayStatus]}</b>
+              {displayStatus !== 'stopped' && (
+                <> since {formatDateTime(startedAt)} EAT; {formatRelativeTime(startedAt)}</>
+              )}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, color: '#B0B7C3', fontSize: 13 }}>
+            <Typography component="span" sx={{ color: '#FFFFFF', fontWeight: 700, minWidth: '72px' }}>
+              Docs:
+            </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+              <Typography component="span">man:{docsCmd}(8)</Typography>
+              <Typography component="span">man:{docsCmd}_config(5)</Typography>
+            </Box>
+          </Box>
         </Box>
         <ServiceLogo code={code} />
       </Box>
