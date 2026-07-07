@@ -80,10 +80,10 @@ function Login({ onLogin } = {}) {
                 </div>
             )}
 
-            <div className="mx-auto overflow-hidden flex flex-col md:flex-row w-full md:h-screen">
+            <div className="mx-auto overflow-hidden flex flex-col md:flex-row w-full h-screen">
                 {/* Section Gauche */}
                 <div className="w-full md:w-1/2 bg-gradient-to-r from-[#050A24] to-[#0F1D5A] flex justify-center items-center p-4">
-                     <div className="flex md:shrink-0 justify-center items-center p-6 my-10 md:my-0 md:mt-30 xl:ml-70 md:mb-30 bg-gradient-to-tr from-[#007DFA]/[4%] via-[#0C8CE9]/[15%] to-[#007DFA]/[4%] text-white w-11/12 sm:w-auto md:w-170 md:h-180 max-w-full" >
+                     <div className="flex md:shrink-0 justify-center items-center p-6 my-10 md:my-0 md:mt-30 md:mb-30 md:ml-[max(0px,calc(50vw-680px))] bg-gradient-to-tr from-[#007DFA]/[4%] via-[#0C8CE9]/[15%] to-[#007DFA]/[4%] text-white w-11/12 sm:w-auto md:w-170 md:h-[min(720px,85vh)] max-w-full" >
                         <div className="p-4 md:p-0">
                             <h2 className="text-[14px] font-bold">TRACKER TEAM©</h2>                            
                             <h1 className="mt-20 text-4xl font-bold">Service Manager</h1>
@@ -94,8 +94,8 @@ function Login({ onLogin } = {}) {
                 
                 {/* Section Droite */}
                  <div className="md:w-1/2 bg-white w-full h-full flex justify-center items-center p-4">
-                    <div className="flex text-black justify-center items-center p-4 my-10 md:my-0 md:mt-30 xl:mr-70 md:mb-30 bg-gradient-to-tr from-[#FFFFFF]/[4%] via-[#A3A3A3]/[15%] to-[#FFFFFF]/[4%] md:shrink-0 w-11/12 sm:w-auto md:w-170 md:h-180 border border-[#E3E3E3] shadow-lg max-w-full">
-                        <div className="p-6 md:pb-10 md:pr-20 md:pl-20 justify-center bg-white md:ml-25 md:mr-25 md:mb-10 md:mt-10 w-full md:w-[500px] md:h-[680px] border border-white rounded-3xl flex flex-col items-center max-w-full">
+                    <div className="flex text-black justify-center items-center p-4 my-10 md:my-0 md:mt-30 md:mb-30 md:mr-[max(0px,calc(50vw-680px))] bg-gradient-to-tr from-[#FFFFFF]/[4%] via-[#A3A3A3]/[15%] to-[#FFFFFF]/[4%] md:shrink-0 w-11/12 sm:w-auto md:w-170 md:h-[min(720px,85vh)] border border-[#E3E3E3] shadow-lg max-w-full">
+                        <div className="p-6 md:pb-10 md:pr-20 md:pl-20 justify-center bg-white md:ml-25 md:mr-25 md:mb-10 md:mt-10 w-full md:w-[500px] md:h-[min(680px,78vh)] border border-white rounded-3xl flex flex-col items-center max-w-full">
                             
                             <div className="flex shrink-0 justify-center items-center w-20 h-20 mt-10 mx-auto border bg-[radial-gradient(circle,_#0F1D5A_0%,_#0C8CE9_100%)] rounded-full">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24">
