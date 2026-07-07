@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useState,useId } from 'react';
+import { useState, useId } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -54,21 +54,32 @@ function Login({ onLogin } = {}) {
 
         if (isLoginValid) {
             setError('');
-            setSuccess('Connexion réussie ! Redirection en cours...');
-            setLoading(true); // On active le chargement
+            setSuccess('Login successfully, loading in progress...');
+            setLoading(true); // On active le chargement plein écran
             
             setTimeout(() => {
                 onLogin(); 
             }, 1500);
         } else {
             setSuccess('');
-            setError('Nom d\'utilisateur ou mot de passe incorrect.');
-            setLoading(false); // Sécurité en cas d'échec
+            setError('Invalid username or password !, Please try again.');
+            setLoading(false); 
         }
     };
 
     return (
         <>
+            {/* ÉCRAN DE CHARGEMENT PLEIN ÉCRAN (Style déconnexion) */}
+            {loading && (
+                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#050A24]/80 backdrop-blur-sm text-white">
+                    <svg className="animate-spin h-14 w-14 text-[#0C8CE9] mb-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p className="text-xl font-semibold tracking-wide">Loading in progress...</p>
+                </div>
+            )}
+
             <div className="mx-auto overflow-hidden flex flex-col md:flex-row w-full md:h-screen">
                 {/* Section Gauche */}
                 <div className="w-full md:w-1/2 bg-gradient-to-r from-[#050A24] to-[#0F1D5A] flex justify-center items-center p-4">
@@ -102,7 +113,7 @@ function Login({ onLogin } = {}) {
                                     <OutlinedInput
                                         id={`${outlinedUsernameId}-input`}
                                         onChange={(e) => setUsername(e.target.value)}
-                                        disabled={loading} // Désactive le champ pendant le chargement
+                                        disabled={loading}
                                         sx={{
                                             borderRadius: '30px',
                                             '& .MuiOutlinedInput-input': {
@@ -139,7 +150,7 @@ function Login({ onLogin } = {}) {
                                         id={`${outlinedPasswordId}-input`}
                                         onChange={(e) => setPassword(e.target.value)}
                                         type={showPassword ? 'text' : 'password'}
-                                        disabled={loading} // Désactive le champ pendant le chargement
+                                        disabled={loading}
                                         sx={{
                                             borderRadius: '30px',
                                             '& .MuiOutlinedInput-input': {
@@ -194,24 +205,10 @@ function Login({ onLogin } = {}) {
                                 </Typography>
                                 )}
 
-                                {/* Bloc de succès mis à jour avec alignement flex et icône loading */}
-                                {success && (
-                                <div className="flex items-center justify-center gap-2 mb-4">
-                                    {/* Spinner SVG animé fluide */}
-                                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" style={{ color: '#2e7d32' }}>
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    <Typography variant="body2" sx={{ color: '#2e7d32', fontWeight: 'bold' }}>
-                                        {success}
-                                    </Typography>
-                                </div>
-                                )}
-
                                 <Button 
                                     variant='contained' 
                                     type='submit' 
-                                    disabled={loading} // Bloque le bouton pendant le chargement
+                                    disabled={loading}
                                     className="w-full md:w-70 md:h-14" 
                                     sx={{ fontSize: '18px', borderRadius: '30px', backgroundColor: '#0C8CE9', textTransform: 'none', fontWeight: 'bold', mb: 2 }}
                                 >
@@ -231,6 +228,7 @@ function Login({ onLogin } = {}) {
                         </div>
                     </div>
                  </div>
+                  
             </div>
         </>
     );
