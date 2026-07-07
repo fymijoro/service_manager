@@ -93,7 +93,7 @@ function Footer() {
       </Box>
 
       <Box sx={{ py: 0.15 }}>
-        <Typography sx={{ fontSize: 20, lineHeight: 1.3, textAlign: 'center', color: 'rgba(255,255,255,0.7)' }}>
+        <Typography sx={{ fontSize: 16, lineHeight: 1.3, textAlign: 'center', color: 'rgba(255,255,255,0.7)' }}>
           Copyright © {new Date().getFullYear()} All rights reserved
         </Typography>
       </Box>
