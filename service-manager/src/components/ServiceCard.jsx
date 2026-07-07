@@ -17,7 +17,7 @@ const ACTIVE_LABELS = {
   restarting: 'activating (auto-restart)',
 }
 
-function ServiceCard({ service, onRestart, onStop, onStart, isRestarting }) {
+function ServiceCard({ service, onRestart, onStop, onStart, isRestarting, isBlurring }) {
   const { name, unit, code, docsCmd, description, status, enabledPreset, startedAt } = service
   const displayStatus = isRestarting ? 'restarting' : status
 
@@ -33,7 +33,8 @@ function ServiceCard({ service, onRestart, onStop, onStart, isRestarting }) {
         justifyContent: 'space-between',
         height: '100%',
         gap: 1.5,
-        transition: 'transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease',
+        transition: 'transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease',
+        filter: isBlurring ? 'blur(4px)' : 'none',
         '&:hover': {
           borderColor: '#0C8CE9',
           boxShadow: '0 0 20px rgba(12, 140, 233, 0.5)',
@@ -82,13 +83,14 @@ function ServiceCard({ service, onRestart, onStop, onStart, isRestarting }) {
         <ServiceLogo code={code} />
       </Box>
 
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 1 }}>
-        <ServiceStatusBadge status={displayStatus} />
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 1 }}>
+        <ServiceStatusBadge status={displayStatus} isBlurring={isBlurring} />
         <ServiceActionsMenu
           status={status}
           onRestart={() => onRestart(service.id)}
           onStop={() => onStop(service.id)}
           onStart={() => onStart(service.id)}
+          isBlurring={isBlurring}
         />
       </Box>
     </Box>

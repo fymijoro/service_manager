@@ -6,7 +6,7 @@ const STATUS_STYLES = {
   restarting: { label: 'Restarting...', color: '#F59E0B' },
 }
 
-function ServiceStatusBadge({ status }) {
+function ServiceStatusBadge({ status, isBlurring }) {
   const { label, color } = STATUS_STYLES[status]
   return (
     <Box
@@ -21,6 +21,8 @@ function ServiceStatusBadge({ status }) {
         color,
         fontWeight: 700,
         fontSize: 14,
+        transition: 'filter 0.25s ease',
+        filter: isBlurring ? 'blur(3px)' : 'none',
       }}
     >
       {label}

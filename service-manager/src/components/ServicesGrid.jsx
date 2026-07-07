@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import ServiceCard from './ServiceCard.jsx'
 
-function ServicesGrid({ services, onRestart, onStop, onStart, restartingId }) {
+function ServicesGrid({ services, onRestart, onStop, onStart, restartingId, isBlurring }) {
   return (
     <Box
       sx={{
@@ -18,6 +18,7 @@ function ServicesGrid({ services, onRestart, onStop, onStart, restartingId }) {
           onStop={onStop}
           onStart={onStart}
           isRestarting={restartingId === service.id}
+          isBlurring={isBlurring}
         />
       ))}
     </Box>

@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { IconButton, Menu, MenuItem, Divider } from '@mui/material'
 import SettingsIcon from '@mui/icons-material/Settings'
 
-function ServiceActionsMenu({ status, onRestart, onStop, onStart }) {
+function ServiceActionsMenu({ status, onRestart, onStop, onStart, isBlurring }) {
   const [anchorEl, setAnchorEl] = useState(null)
   const open = Boolean(anchorEl)
 
@@ -26,6 +26,8 @@ function ServiceActionsMenu({ status, onRestart, onStop, onStart }) {
           borderRadius: '12px',
           bgcolor: 'rgba(255,255,255,0.06)',
           '&:hover': { bgcolor: 'rgba(59,130,246,0.18)' },
+          transition: 'filter 0.25s ease',
+          filter: isBlurring ? 'blur(3px)' : 'none',
         }}
       >
         <SettingsIcon sx={{ fontSize: 24 }} />

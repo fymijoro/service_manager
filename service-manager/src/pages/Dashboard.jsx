@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import TypewriterTitle from '../components/TypewriterTitle.jsx'
 import StatsSummary from '../components/StatsSummary.jsx'
 import FilterBar from '../components/FilterBar.jsx'
@@ -9,6 +9,12 @@ function Dashboard() {
   const [services, setServices] = useState(initialServices)
   const [filter, setFilter] = useState('all')
   const [restartingId, setRestartingId] = useState(null)
+  const [isBlurring, setIsBlurring] = useState(false)
+
+  const triggerBlur = (ms = 600) => {
+    setIsBlurring(true)
+    setTimeout(() => setIsBlurring(false), ms)
+  }
 
   const total = services.length
   const running = services.filter((s) => s.status === 'running').length
@@ -25,16 +31,28 @@ function Dashboard() {
     )
   }
 
-  const handleStop = (id) => updateStatus(id, 'stopped')
-  const handleStart = (id) => updateStatus(id, 'running')
+  const handleStop = (id) => {
+    triggerBlur()
+    updateStatus(id, 'stopped')
+  }
+  const handleStart = (id) => {
+    triggerBlur()
+    updateStatus(id, 'running')
+  }
 
   const handleRestart = (id) => {
+    triggerBlur()
     setRestartingId(id)
     setTimeout(() => {
       updateStatus(id, 'running')
       setRestartingId(null)
     }, 1500)
   }
+
+  useEffect(() => {
+    // small blur on initial load to match requested effect
+    triggerBlur(700)
+  }, [])
 
   return (
     <div className="py-8 px-4 flex flex-col items-center">
@@ -47,13 +65,20 @@ function Dashboard() {
         onFilterChange={setFilter}
       />
       <div className="w-full max-w-[1200px] mt-6">
-        <FilterBar filter={filter} onFilterChange={setFilter} />
+        <FilterBar
+          filter={filter}
+          onFilterChange={(value) => {
+            triggerBlur()
+            setFilter(value)
+          }}
+        />
         <ServicesGrid
           services={filteredServices}
           onRestart={handleRestart}
           onStop={handleStop}
           onStart={handleStart}
           restartingId={restartingId}
+          isBlurring={isBlurring}
         />
       </div>
     </div>
