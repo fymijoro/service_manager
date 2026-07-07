@@ -6,8 +6,8 @@ import FacebookIcon from '@mui/icons-material/Facebook'
 import { useNavigate } from 'react-router-dom'
 
 const footerLinks = [
-  { label: 'Dashboard', path: '/' },
   { label: 'About', path: '/about' },
+  { label: 'Dashboard', path: '/' },
   { label: 'Manage Account', path: '/manage-account' },
 ]
 
@@ -31,10 +31,10 @@ function Footer() {
           flexDirection: { xs: 'column', md: 'row' },
           justifyContent: 'space-between',
           alignItems: 'flex-start',
-          gap: 4,
+          gap: 2,
           px: { xs: 4, md: 8 },
-          py: { xs: 1.5, md: 2 },
-          minHeight: 150,
+          py: { xs: 0.75, md: 1 },
+          minHeight: 120,
         }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

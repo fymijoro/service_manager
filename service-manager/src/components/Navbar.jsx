@@ -44,9 +44,13 @@ function Navbar() {
   return (
     <>
       <AppBar
-        position="static"
+        position="fixed"
         elevation={0}
         sx={{
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: (theme) => theme.zIndex.appBar,
           background:
             'linear-gradient(90deg, #050A24 0%, #0F1D5A 51%, #050A24 100%)',
         }}

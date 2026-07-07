@@ -4,7 +4,7 @@ function Dashboard() {
   return (
     <div className="p-8">
       <TypewriterTitle />
-    </div>
+    </div> 
   )
 }
 
