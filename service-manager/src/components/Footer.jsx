@@ -22,7 +22,7 @@ function Footer() {
   const navigate = useNavigate()
 
   return (
-    <Box component="footer" sx={{ backgroundColor: '#070126' }}>
+    <Box component="footer" sx={{ background: 'linear-gradient(90deg, #050A24 0%, #0F1D5A 51%, #050A24 100%)' }}>
       <Box
         sx={{
           maxWidth: 1440,
