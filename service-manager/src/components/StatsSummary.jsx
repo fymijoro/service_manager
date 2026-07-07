@@ -33,8 +33,8 @@ function StatsSummary() {
   return (
     <Box
       sx={{
-        width: { xs: '100%', md: '969px' },
-        maxWidth: '100%',
+        width: '100%',
+        maxWidth: '969px',
         mx: 'auto',
         background: GRADIENT,
         borderRadius: '10px',
@@ -42,8 +42,10 @@ function StatsSummary() {
         px: { xs: 2, md: '71px' },
         py: { xs: 2, md: '22px' },
         display: 'flex',
+        flexWrap: 'wrap',
         flexDirection: { xs: 'column', md: 'row' },
-        gap: { xs: 2, md: '71px' },
+        justifyContent: 'center',
+        gap: { xs: 2, md: '40px' },
       }}
     >
       {stats.map((stat, index) => (

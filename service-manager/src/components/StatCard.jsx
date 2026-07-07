@@ -7,8 +7,9 @@ function StatCard({ label, value, accentColor }) {
     <Box
       sx={{
         width: { xs: '100%', md: '228px' },
+        maxWidth: '228px',
         height: '58px',
-        flexShrink: 0,
+        flexShrink: 1,
         background: GRADIENT,
         border: `1px solid ${accentColor}`,
         boxShadow: `0 0 12px ${accentColor}55`,
@@ -18,12 +19,16 @@ function StatCard({ label, value, accentColor }) {
         justifyContent: 'center',
         gap: 1,
         px: 2,
+        overflow: 'hidden',
       }}
     >
-      <Typography sx={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', whiteSpace: 'nowrap' }}>
+      <Typography
+        noWrap
+        sx={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}
+      >
         {label}
       </Typography>
-      <Typography sx={{ fontSize: 32, fontWeight: 700, color: accentColor, lineHeight: 1 }}>
+      <Typography sx={{ fontSize: 32, fontWeight: 700, color: accentColor, lineHeight: 1, flexShrink: 0 }}>
         {value}
       </Typography>
     </Box>
