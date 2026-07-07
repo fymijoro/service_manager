@@ -3,6 +3,13 @@ import ServiceLogo from './ServiceLogo.jsx'
 import ServiceStatusBadge from './ServiceStatusBadge.jsx'
 import ServiceActionsMenu from './ServiceActionsMenu.jsx'
 
+const hangingIndentSx = {
+  color: '#B0B7C3',
+  fontSize: 13,
+  pl: '52px',
+  textIndent: '-52px',
+}
+
 function ServiceCard({ service, onRestart, onStop, onStart, isRestarting }) {
   const { name, unit, code, docsCmd, description, status } = service
 
@@ -32,18 +39,19 @@ function ServiceCard({ service, onRestart, onStop, onStart, isRestarting }) {
           <Typography sx={{ color: '#FFFFFF', fontWeight: 700, fontSize: 15, mt: 0.5 }}>
             {description}
           </Typography>
-          <Typography sx={{ color: '#B0B7C3', fontSize: 13, mt: 1 }}>
+
+          <Typography sx={{ ...hangingIndentSx, mt: 1 }}>
             Loaded: <b style={{ color: '#FFFFFF' }}>loaded</b> (/usr/lib/systemd/system/{unit}.service; disabled; preset: enabled)
           </Typography>
-          <Typography sx={{ color: '#B0B7C3', fontSize: 13 }}>
+          <Typography sx={hangingIndentSx}>
             Active: {status === 'running' ? (
               <b style={{ color: '#FFFFFF' }}>active (running)</b>
             ) : (
               <b style={{ color: '#FFFFFF' }}>inactive (dead)</b>
             )} since Tue 2026-06-23 11:43:35 EAT; 1s ago
           </Typography>
-          <Typography sx={{ color: '#B0B7C3', fontSize: 13 }}>
-            Docs: man:{docsCmd}(8)<br />man:{docsCmd}_config(5)
+          <Typography sx={hangingIndentSx}>
+            Docs: man:{docsCmd}(8); man:{docsCmd}_config(5)
           </Typography>
         </Box>
         <ServiceLogo code={code} />

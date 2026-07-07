@@ -17,6 +17,7 @@ function ServiceStatusBadge({ status }) {
         py: 0.5,
         borderRadius: '20px',
         border: `1px solid ${color}`,
+        boxShadow: `0 0 10px ${color}99, inset 0 0 6px ${color}33`,
         color,
         fontWeight: 700,
         fontSize: 14,

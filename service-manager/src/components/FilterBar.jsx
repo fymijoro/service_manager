@@ -15,6 +15,7 @@ function FilterBar({ filter, onFilterChange }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 1.5, mb: 2 }}>
       <Typography sx={{ color: '#FFFFFF', fontWeight: 700 }}>Filter by</Typography>
+
       <Box
         onClick={(e) => setAnchorEl(e.currentTarget)}
         sx={{
@@ -22,18 +23,40 @@ function FilterBar({ filter, onFilterChange }) {
           alignItems: 'center',
           gap: 1,
           border: '1px solid #3B82F6',
-          borderRadius: '20px',
+          borderRadius: '999px',
           color: '#FFFFFF',
-          px: 2,
-          py: 0.5,
+          background: '#0F1730',
+          px: 2.5,
+          py: 0.75,
           fontWeight: 700,
+          fontSize: 14,
           cursor: 'pointer',
+          userSelect: 'none',
         }}
       >
         {FILTER_LABELS[filter]}
-        <KeyboardArrowDownIcon fontSize="small" />
+        <KeyboardArrowDownIcon fontSize="small" sx={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
       </Box>
-      <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        slotProps={{
+          paper: {
+            sx: {
+              mt: 1,
+              background: '#0F1730',
+              border: '1px solid #3B82F6',
+              borderRadius: '12px',
+              color: '#FFFFFF',
+              minWidth: 160,
+            },
+          },
+        }}
+      >
         {Object.entries(FILTER_LABELS).map(([value, label]) => (
           <MenuItem
             key={value}
@@ -41,6 +64,11 @@ function FilterBar({ filter, onFilterChange }) {
             onClick={() => {
               onFilterChange(value)
               setAnchorEl(null)
+            }}
+            sx={{
+              fontWeight: value === filter ? 700 : 400,
+              '&.Mui-selected': { background: 'rgba(59, 130, 246, 0.15)' },
+              '&:hover': { background: 'rgba(59, 130, 246, 0.1)' },
             }}
           >
             {label}
