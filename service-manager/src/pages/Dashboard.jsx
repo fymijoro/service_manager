@@ -1,29 +1,28 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
+import { useOutletContext } from 'react-router-dom'
 import TypewriterTitle from '../components/TypewriterTitle.jsx'
 import StatsSummary from '../components/StatsSummary.jsx'
+import ServicesCharts from '../components/ServicesCharts.jsx'
 import FilterBar from '../components/FilterBar.jsx'
 import ServicesGrid from '../components/ServicesGrid.jsx'
-import { initialServices } from '../data/services.js'
+import { generateMockServiceHistories } from '../utils/serviceHistoryUtils.js'
 
 function Dashboard() {
-  const [services, setServices] = useState(initialServices)
+  const { services, setServices, history } = useOutletContext()
   const [filter, setFilter] = useState('all')
   const [restartingId, setRestartingId] = useState(null)
-  const [isBlurring, setIsBlurring] = useState(false)
 
-  const triggerBlur = (ms = 600) => {
-    setIsBlurring(true)
-    setTimeout(() => setIsBlurring(false), ms)
-  }
+  // Génère les historiques fictifs pour les services (ou récupère depuis le context si disponible)
+  const serviceHistories = useMemo(() => {
+    return generateMockServiceHistories(services)
+  }, [services])
 
   const total = services.length
   const running = services.filter((s) => s.status === 'running').length
   const stopped = services.filter((s) => s.status === 'stopped').length
 
-  const filteredServices = useMemo(() => {
-    const list = filter === 'all' ? services : services.filter((s) => s.status === filter)
-    return [...list].sort((a, b) => a.name.localeCompare(b.name))
-  }, [services, filter])
+  const filteredServices =
+    filter === 'all' ? services : services.filter((s) => s.status === filter)
 
   const updateStatus = (id, status) => {
     setServices((prev) =>
@@ -31,17 +30,10 @@ function Dashboard() {
     )
   }
 
-  const handleStop = (id) => {
-    triggerBlur()
-    updateStatus(id, 'stopped')
-  }
-  const handleStart = (id) => {
-    triggerBlur()
-    updateStatus(id, 'running')
-  }
+  const handleStop = (id) => updateStatus(id, 'stopped')
+  const handleStart = (id) => updateStatus(id, 'running')
 
   const handleRestart = (id) => {
-    triggerBlur()
     setRestartingId(id)
     setTimeout(() => {
       updateStatus(id, 'running')
@@ -49,13 +41,8 @@ function Dashboard() {
     }, 1500)
   }
 
-  useEffect(() => {
-    // small blur on initial load to match requested effect
-    triggerBlur(700)
-  }, [])
-
   return (
-    <div className="py-8 px-4 flex flex-col items-center">
+    <div className="p-8 flex flex-col items-center">
       <div className="mt-10 w-full max-w-[1200px]">
         <TypewriterTitle />
       </div>
@@ -66,21 +53,15 @@ function Dashboard() {
         filter={filter}
         onFilterChange={setFilter}
       />
+      <ServicesCharts running={running} stopped={stopped} filteredServices={filteredServices} histories={serviceHistories} filter={filter} />
       <div className="w-full max-w-[1200px] mt-6">
-        <FilterBar
-          filter={filter}
-          onFilterChange={(value) => {
-            triggerBlur()
-            setFilter(value)
-          }}
-        />
+        <FilterBar filter={filter} onFilterChange={setFilter} />
         <ServicesGrid
           services={filteredServices}
           onRestart={handleRestart}
           onStop={handleStop}
           onStart={handleStart}
           restartingId={restartingId}
-          isBlurring={isBlurring}
         />
       </div>
     </div>

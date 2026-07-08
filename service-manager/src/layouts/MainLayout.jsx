@@ -2,12 +2,12 @@ import { Outlet } from 'react-router-dom'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 
-function MainLayout({ onLogout}) {
+function MainLayout({ onLogout, services, setServices, history }) {
   return (
     <div className="min-h-screen bg-[#050816] flex flex-col">
       <Navbar onLogout={onLogout} />
       <main className="flex-1 pt-6">
-        <Outlet />
+        <Outlet context={{ services, setServices, history }} />
       </main>
       <Footer />
     </div>
@@ -15,4 +15,3 @@ function MainLayout({ onLogout}) {
 }
 
 export default MainLayout
-
