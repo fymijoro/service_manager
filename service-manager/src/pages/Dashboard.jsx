@@ -56,7 +56,9 @@ function Dashboard() {
 
   return (
     <div className="py-8 px-4 flex flex-col items-center">
-      <TypewriterTitle />
+      <div className="mt-10 w-full max-w-[1200px]">
+        <TypewriterTitle />
+      </div>
       <StatsSummary
         total={total}
         running={running}

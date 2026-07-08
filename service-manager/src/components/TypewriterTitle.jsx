@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 
 const FULL_TEXT = 'SERVICE MANAGER'
-const TYPING_SPEED = 120     // ms entre chaque lettre tapée
+const TYPING_SPEED = 120     // ms entre chaque lettre tapée ou effacée
 const DISPLAY_DURATION = 5000 // ms d'affichage complet
 const PAUSE_DURATION = 1000   // ms de pause, texte vide
 
 function TypewriterTitle() {
   const [displayedText, setDisplayedText] = useState('')
-  const [phase, setPhase] = useState('typing') // 'typing' | 'displaying' | 'pausing'
+  const [phase, setPhase] = useState('typing') // 'typing' | 'displaying' | 'erasing' | 'pausing'
 
   useEffect(() => {
     let timeoutId
@@ -24,9 +24,18 @@ function TypewriterTitle() {
 
     if (phase === 'displaying') {
       timeoutId = setTimeout(() => {
-        setDisplayedText('')
-        setPhase('pausing')
+        setPhase('erasing')
       }, DISPLAY_DURATION)
+    }
+
+    if (phase === 'erasing') {
+      if (displayedText.length > 0) {
+        timeoutId = setTimeout(() => {
+          setDisplayedText(FULL_TEXT.slice(0, displayedText.length - 1))
+        }, TYPING_SPEED)
+      } else {
+        setPhase('pausing')
+      }
     }
 
     if (phase === 'pausing') {

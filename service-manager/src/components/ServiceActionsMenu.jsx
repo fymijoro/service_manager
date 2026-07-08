@@ -24,13 +24,13 @@ function ServiceActionsMenu({ status, onRestart, onStop, onStart, isBlurring }) 
           color: '#FFFFFF',
           p: 1,
           borderRadius: '12px',
-          bgcolor: 'rgba(255,255,255,0.06)',
-          '&:hover': { bgcolor: 'rgba(59,130,246,0.18)' },
+          bgcolor: 'transparent',
+          '&:hover': { bgcolor: 'rgba(255,255,255,0.08)' },
           transition: 'filter 0.25s ease',
           filter: isBlurring ? 'blur(3px)' : 'none',
         }}
       >
-        <SettingsIcon sx={{ fontSize: 24 }} />
+        <SettingsIcon sx={{ fontSize: 45 }} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
