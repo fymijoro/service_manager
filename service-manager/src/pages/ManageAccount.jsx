@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { DEFAULT_USERNAME,DEFAULT_PASSWORD } from "./Login";
+import Login from "./Login";
 
 import {
     AccountCard,
@@ -12,8 +14,8 @@ import {
 
 
 const DEFAULT_ACCOUNT = {
-    username: "Admin",
-    password: "root",
+    username: DEFAULT_USERNAME,
+    password: DEFAULT_PASSWORD,
 };
 
 const STORAGE_KEY = "service-manager-account";
@@ -54,7 +56,7 @@ function ManageAccount() {
         showDialog(
             "warning",
             "Username required",
-            "Username cannot be empty."
+            "Username cannot be empty!"
         );
 
         return;
@@ -89,7 +91,7 @@ function ManageAccount() {
             showDialog(
                 "error",
                 "Incorrect password",
-                "The current password is incorrect."
+                "The current password is incorrect!"
             );
 
             return;

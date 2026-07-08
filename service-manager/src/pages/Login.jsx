@@ -18,8 +18,8 @@ import App from '../App';
 import GithubDarkIcon from '@iconify-react/selfhst/github-dark';
 import GoogleIcon from '@iconify-react/selfhst/google';
 
-const STATIC_USERNAME="Admin";
-const STATIC_PASSWORD="root";
+export const DEFAULT_USERNAME="Admin";
+export const DEFAULT_PASSWORD="root";
 
 
 function Login({ onLogin } = {}) {
@@ -49,7 +49,15 @@ function Login({ onLogin } = {}) {
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        const isLoginValid = username === STATIC_USERNAME && password === STATIC_PASSWORD;
+        // 1. Récupérer le compte mis à jour depuis le localStorage (ou utiliser les valeurs par défaut)
+        const saved = localStorage.getItem("service-manager-account");
+        const account = saved 
+            ? JSON.parse(saved) 
+            : { username: DEFAULT_USERNAME, password: DEFAULT_PASSWORD };
+
+        // 2. Comparer avec les données du localStorage au lieu des constantes fixes
+        const isLoginValid = username === account.username && password === account.password;
+        
         console.log('isLoginValid:', isLoginValid, 'username:', username, 'password:', password);
 
         if (isLoginValid) {
