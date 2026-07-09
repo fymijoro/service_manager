@@ -1,42 +1,45 @@
-import { colorForIndex } from './colorUtils.js'
-
-// Couleurs de statut demandées : vert pour running, rouge-orangé pour stopped
-const STATUS_COLORS = {
-  running: '#14A430',
-  stopped: '#DD4515',
-}
-
 /**
- * Transforme les historiques de segments (déjà maintenus dans App.jsx)
- * en un tableau de points exploitables par un bar chart "barres flottantes".
- * Chaque service reçoit en plus une teinte de bordure unique (rowColor)
- * pour rester distinguable visuellement même si deux services sont
- * dans le même état au même moment.
+ * Transforme l'historique des services affichés en points exploitables par
+ * le Gantt (barres flottantes [début, fin] par ligne).
  */
-export function buildGanttData(services, histories) {
+export function buildGanttRows(services, histories) {
   const now = Date.now()
-  const data = []
+  const points = []
 
-  services.forEach((service, index) => {
+  services.forEach((service) => {
     const segments = histories[service.id] ?? []
-    const rowColor = colorForIndex(index, services.length)
-
     segments.forEach((seg) => {
       const endMs = seg.end ? seg.end.getTime() : now
-      data.push({
-        y: service.name,                 // catégorie (ligne) sur l'axe Y
-        x: [seg.start.getTime(), endMs], // barre flottante : [début, fin]
+      points.push({
+        y: service.name,
+        x: [seg.start.getTime(), endMs],
         status: seg.status,
         start: seg.start,
         end: seg.end ?? new Date(now),
-        rowColor,
       })
     })
   })
 
-  return data
+  return points
 }
 
-export function statusColor(status) {
-  return STATUS_COLORS[status] ?? '#888888'
+/**
+ * Calcule la plage temporelle totale à partir de TOUS les historiques,
+ * peu importe le filtre actif — c'est ce qui garantit que changer de
+ * "Filter by" ne fait plus bouger le zoom.
+ */
+export function computeDomain(histories) {
+  const now = Date.now()
+  let min = now
+  let max = now
+
+  Object.values(histories).forEach((segments) => {
+    segments.forEach((seg) => {
+      min = Math.min(min, seg.start.getTime())
+      max = Math.max(max, seg.end ? seg.end.getTime() : now)
+    })
+  })
+
+  if (min === max) min = max - 2 * 24 * 60 * 60 * 1000
+  return { min, max }
 }
