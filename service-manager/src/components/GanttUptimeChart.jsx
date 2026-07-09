@@ -44,15 +44,15 @@ function GanttUptimeChart({ services, histories }) {
         data: rows,
         backgroundColor: (ctx) => (ctx.raw ? STATUS_COLORS[ctx.raw.status] : STATUS_COLORS.running),
         borderWidth: 0,
-        categoryPercentage: 0.7,
-        barPercentage: 0.9,
-        maxBarThickness: 16,
+        categoryPercentage: 0.6,
+        barPercentage: 0.8,
+        maxBarThickness: 11,
         borderRadius: 2,
       },
     ],
   }
 
-  const chartHeight = Math.max(160, services.length * 32)
+  const chartHeight = Math.max(140, services.length * 22)
 
   const clampRange = (min, max) => {
     let newMin = Math.max(domain.min, min)
@@ -82,7 +82,7 @@ function GanttUptimeChart({ services, histories }) {
           color: '#B0B7C3',
           maxTicksLimit: 6,
           callback: (value) => format(new Date(value), 'd MMM HH:mm', { locale: enUS }),
-          font: { size: 10 },
+          font: { size: 9 },
         },
         grid: { color: 'rgba(255,255,255,0.08)' },
       },
@@ -90,7 +90,7 @@ function GanttUptimeChart({ services, histories }) {
         type: 'category',
         ticks: {
           color: '#FFFFFF',
-          font: { weight: 600, size: 10 },
+          font: { weight: 600, size: 9 },
           autoSkip: false,
         },
         grid: { color: 'rgba(255,255,255,0.05)' },
@@ -152,11 +152,11 @@ function GanttUptimeChart({ services, histories }) {
 
   return (
     <Box sx={{ width: '100%' }}>
-      <Typography sx={{ color: '#FFFFFF', fontWeight: 700, fontSize: 13, mb: 1 }}>
+      <Typography sx={{ color: '#FFFFFF', fontWeight: 700, fontSize: 12, mb: 0.75 }}>
         📊 Service State Timeline Analysis
       </Typography>
 
-      <Box sx={{ height: chartHeight, cursor: 'pointer', background: 'rgba(15,23,48,0.5)', borderRadius: '8px', padding: '6px' }}>
+      <Box sx={{ height: chartHeight, cursor: 'pointer', background: 'rgba(15,23,48,0.5)', borderRadius: '8px', padding: '4px' }}>
         <Bar ref={chartRef} data={chartData} options={options} />
       </Box>
 
@@ -167,17 +167,17 @@ function GanttUptimeChart({ services, histories }) {
       />
 
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5, mt: 1 }}>
-        <IconButton size="small" onClick={handleResetZoom} sx={{ color: '#B0B7C3', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', px: 1, '&:hover': { background: 'rgba(59,130,246,0.15)' } }} title="🔄 Réinitialiser le zoom">
-          <RestartAltIcon fontSize="small" sx={{ mr: 0.3 }} />
-          <span style={{ fontSize: '10px' }}>Reset</span>
+        <IconButton size="small" onClick={handleResetZoom} sx={{ color: '#B0B7C3', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', px: 0.75, py: 0.25, '&:hover': { background: 'rgba(59,130,246,0.15)' } }} title="🔄 Réinitialiser le zoom">
+          <RestartAltIcon sx={{ fontSize: 14, mr: 0.3 }} />
+          <span style={{ fontSize: '9px' }}>Reset</span>
         </IconButton>
-        <IconButton size="small" onClick={handleZoomIn} sx={{ color: '#B0B7C3', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', px: 1, '&:hover': { background: 'rgba(59,130,246,0.15)' } }} title="🔍⁺ Zoom avant">
-          <ZoomInIcon fontSize="small" sx={{ mr: 0.3 }} />
-          <span style={{ fontSize: '10px' }}>+</span>
+        <IconButton size="small" onClick={handleZoomIn} sx={{ color: '#B0B7C3', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', px: 0.75, py: 0.25, '&:hover': { background: 'rgba(59,130,246,0.15)' } }} title="🔍⁺ Zoom avant">
+          <ZoomInIcon sx={{ fontSize: 14, mr: 0.3 }} />
+          <span style={{ fontSize: '9px' }}>+</span>
         </IconButton>
-        <IconButton size="small" onClick={handleZoomOut} sx={{ color: '#B0B7C3', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', px: 1, '&:hover': { background: 'rgba(59,130,246,0.15)' } }} title="🔍⁻ Zoom arrière">
-          <ZoomOutIcon fontSize="small" sx={{ mr: 0.3 }} />
-          <span style={{ fontSize: '10px' }}>-</span>
+        <IconButton size="small" onClick={handleZoomOut} sx={{ color: '#B0B7C3', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', px: 0.75, py: 0.25, '&:hover': { background: 'rgba(59,130,246,0.15)' } }} title="🔍⁻ Zoom arrière">
+          <ZoomOutIcon sx={{ fontSize: 14, mr: 0.3 }} />
+          <span style={{ fontSize: '9px' }}>-</span>
         </IconButton>
       </Box>
     </Box>
