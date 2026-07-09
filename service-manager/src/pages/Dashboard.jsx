@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import TypewriterTitle from '../components/TypewriterTitle.jsx'
 import StatsSummary from '../components/StatsSummary.jsx'
@@ -6,10 +6,23 @@ import ServicesCharts from '../components/ServicesCharts.jsx'
 import FilterBar from '../components/FilterBar.jsx'
 import ServicesGrid from '../components/ServicesGrid.jsx'
 
+const BLUR_DURATION = 400 // ms
+
 function Dashboard() {
   const { services, histories, updateServiceStatus } = useOutletContext()
   const [filter, setFilter] = useState('all')
   const [restartingId, setRestartingId] = useState(null)
+  const [isBlurring, setIsBlurring] = useState(true)
+
+  // Déclenche un bref flou à chaque fois que :
+  // - la page se charge (montage du composant)
+  // - le filtre change (clic sur une StatCard ou "Filter by")
+  // - l'état d'un service change (Start/Stop/Restart, via `services`)
+  useEffect(() => {
+    setIsBlurring(true)
+    const timeoutId = setTimeout(() => setIsBlurring(false), BLUR_DURATION)
+    return () => clearTimeout(timeoutId)
+  }, [filter, services])
 
   const total = services.length
   const running = services.filter((s) => s.status === 'running').length
@@ -49,6 +62,7 @@ function Dashboard() {
           onStop={handleStop}
           onStart={handleStart}
           restartingId={restartingId}
+          isBlurring={isBlurring}
         />
       </div>
     </div>
