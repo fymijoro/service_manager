@@ -12,7 +12,6 @@ function Dashboard() {
   const [filter, setFilter] = useState('all')
   const [restartingId, setRestartingId] = useState(null)
 
-  // Génère les historiques fictifs pour les services (ou récupère depuis le context si disponible)
   const serviceHistories = useMemo(() => {
     return generateMockServiceHistories(services)
   }, [services])
@@ -21,8 +20,12 @@ function Dashboard() {
   const running = services.filter((s) => s.status === 'running').length
   const stopped = services.filter((s) => s.status === 'stopped').length
 
-  const filteredServices =
-    filter === 'all' ? services : services.filter((s) => s.status === filter)
+  // Mémorisé : garde la même référence tant que `services` et `filter` ne
+  // changent pas réellement, pour éviter de recalculer inutilement les
+  // graphes (et éviter de casser leur zoom) à chaque re-rendu du Dashboard.
+  const filteredServices = useMemo(() => {
+    return filter === 'all' ? services : services.filter((s) => s.status === filter)
+  }, [services, filter])
 
   const updateStatus = (id, status) => {
     setServices((prev) =>
@@ -53,7 +56,17 @@ function Dashboard() {
         filter={filter}
         onFilterChange={setFilter}
       />
-      <ServicesCharts running={running} stopped={stopped} filteredServices={filteredServices} histories={serviceHistories} filter={filter} />
+
+      {/* Même conteneur (largeur + marges) que la grille de cartes plus bas */}
+      <div className="w-full max-w-[1200px] mt-6">
+        <ServicesCharts
+          running={running}
+          stopped={stopped}
+          filteredServices={filteredServices}
+          histories={serviceHistories}
+        />
+      </div>
+
       <div className="w-full max-w-[1200px] mt-6">
         <FilterBar filter={filter} onFilterChange={setFilter} />
         <ServicesGrid

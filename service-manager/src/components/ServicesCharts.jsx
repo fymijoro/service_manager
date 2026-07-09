@@ -9,19 +9,18 @@ function ServicesCharts({ running, stopped, filteredServices, histories }) {
     <Box
       sx={{
         width: '100%',
-        maxWidth: '969px',
-        mx: 'auto',
-        mt: 4,
         display: 'flex',
         flexDirection: { xs: 'column', md: 'row' },
         gap: 3,
         alignItems: 'stretch',
       }}
     >
-      <Box sx={{ flex: 1, background: GRADIENT, borderRadius: '10px', border: '1px solid rgba(59,130,246,0.4)', p: 2, cursor: 'pointer' }}>
+      {/* 1/3 de la largeur sur grand écran */}
+      <Box sx={{ flex: { xs: '1 1 auto', md: '1 1 0' }, background: GRADIENT, borderRadius: '10px', border: '1px solid rgba(59,130,246,0.4)', p: 2, cursor: 'pointer' }}>
         <StatusDonutChart running={running} stopped={stopped} />
       </Box>
-      <Box sx={{ flex: 1.4, background: GRADIENT, borderRadius: '10px', border: '1px solid rgba(59,130,246,0.4)', p: 2, overflowX: 'auto' }}>
+      {/* 2/3 de la largeur sur grand écran */}
+      <Box sx={{ flex: { xs: '1 1 auto', md: '2 1 0' }, background: GRADIENT, borderRadius: '10px', border: '1px solid rgba(59,130,246,0.4)', p: 2, overflowX: 'auto' }}>
         <GanttUptimeChart services={filteredServices} histories={histories} />
       </Box>
     </Box>

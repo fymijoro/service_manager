@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useEffect } from 'react'
 import { Box, Typography, IconButton } from '@mui/material'
 import ZoomInIcon from '@mui/icons-material/ZoomIn'
 import ZoomOutIcon from '@mui/icons-material/ZoomOut'
@@ -18,13 +18,8 @@ import { enUS } from 'date-fns/locale'
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, zoomPlugin)
 
-// Status colors: green for running, orange-red for stopped
-const STATUS_COLORS = {
-  running: '#14A430',
-  stopped: '#DD4515',
-}
+const STATUS_COLORS = { running: '#14A430', stopped: '#DD4515' }
 
-// Color palette to visually distinguish service lines
 const BORDER_COLORS = [
   '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A',
   '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2',
@@ -32,17 +27,19 @@ const BORDER_COLORS = [
   '#CBE4DE', '#E7CEF4', '#F1A0E2', '#FFFACD',
 ]
 
-/**
- * Gantt/Timeline component to track service uptime
- * @param {Array} services - List of services to display
- * @param {Object} histories - Service state history (service.id -> [{start, end, status}])
- */
+const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000
+const MIN_RANGE_MS = 60 * 60 * 1000 // on interdit de zoomer en dessous d'1h visible
+
 function GanttUptimeChart({ services, histories }) {
   const chartRef = useRef(null)
-  const containerRef = useRef(null)
 
-  // Calculate Gantt data from histories
-  const { data, timeRange, initialZoom } = useMemo(() => {
+  // Mémorise toujours la plage COMPLÈTE de données disponibles (mise à jour à
+  // chaque rendu, mais SANS jamais toucher au zoom actuel de l'utilisateur).
+  // Sert de référence pour le bouton Reset et pour empêcher de dézoomer
+  // au-delà des données réelles.
+  const domainRef = useRef({ min: Date.now() - TWO_DAYS_MS, max: Date.now() })
+
+  const { data, timeRange } = useMemo(() => {
     const now = Date.now()
     const points = []
     let minTime = now
@@ -69,24 +66,15 @@ function GanttUptimeChart({ services, histories }) {
       })
     })
 
-    // Add padding for temporal margin
-    const padding = (maxTime - minTime) * 0.1 || 3600000
+    const padding = (maxTime - minTime) * 0.05 || 3600000
     minTime -= padding
     maxTime += padding
 
-    // Initial zoom: last 2 days of the data range
-    const twoDaysMs = 2 * 24 * 60 * 60 * 1000
-    const initialZoomRange = {
-      min: Math.max(minTime, maxTime - twoDaysMs),
-      max: maxTime,
-    }
-
-    return {
-      data: points,
-      timeRange: { min: minTime, max: maxTime },
-      initialZoom: initialZoomRange,
-    }
+    return { data: points, timeRange: { min: minTime, max: maxTime } }
   }, [services, histories])
+
+  // On garde toujours la dernière plage connue, sans provoquer de re-zoom.
+  domainRef.current = timeRange
 
   const labels = services.map((s) => s.name)
 
@@ -99,9 +87,7 @@ function GanttUptimeChart({ services, histories }) {
         backgroundColor: (ctx) => {
           const raw = ctx.raw
           if (!raw) return STATUS_COLORS.running + 'D9'
-          return (
-            (raw.status === 'running' ? STATUS_COLORS.running : STATUS_COLORS.stopped) + 'D9'
-          )
+          return (raw.status === 'running' ? STATUS_COLORS.running : STATUS_COLORS.stopped) + 'D9'
         },
         borderColor: (ctx) => ctx.raw?.borderColor ?? '#3B82F6',
         borderWidth: 2,
@@ -112,37 +98,27 @@ function GanttUptimeChart({ services, histories }) {
     ],
   }
 
-  // Generate time axis labels from the time range
-  const timeLabels = useMemo(() => {
-    const labels = []
-    const interval = (initialZoom.max - initialZoom.min) / 8 // max 8 labels
-    for (let i = 0; i < 9; i++) {
-      const time = initialZoom.min + i * interval
-      labels.push(format(new Date(time), 'EEE d MMM HH:mm', { locale: enUS }))
-    }
-    return labels
-  }, [initialZoom])
-
-  // Dynamic height based on number of displayed services
   const chartHeight = Math.max(120, services.length * 18)
 
   const options = {
-    indexAxis: 'y', // Transformation en barres horizontales
+    indexAxis: 'y',
     responsive: true,
     maintainAspectRatio: false,
+    animation: { duration: 200 },
     scales: {
       x: {
         type: 'linear',
         position: 'bottom',
-        min: initialZoom.min,
-        max: initialZoom.max,
-        title: {
-          display: false,
-        },
+        // IMPORTANT : pas de min/max fixés ici. Sinon chaque re-rendu de React
+        // écraserait le zoom choisi par l'utilisateur avec ces valeurs par défaut.
+        // Le zoom initial est appliqué une seule fois, plus bas, via useEffect.
         ticks: {
           color: '#B0B7C3',
-          stepSize: (initialZoom.max - initialZoom.min) / 8,
-          callback: (value, index) => (index < timeLabels.length ? timeLabels[index] : ''),
+          maxTicksLimit: 6,
+          // On formate directement CHAQUE graduation à partir de sa propre valeur :
+          // ça reste juste même après un zoom/pan, contrairement à une liste de
+          // libellés pré-calculée qui ne suivait pas le zoom réel du graphique.
+          callback: (value) => format(new Date(value), 'd MMM HH:mm', { locale: enUS }),
           font: { size: 10 },
         },
         grid: { color: 'rgba(255,255,255,0.08)' },
@@ -168,16 +144,10 @@ function GanttUptimeChart({ services, histories }) {
           label: (item) => {
             const raw = item.raw
             const label = raw.status === 'running' ? '✅ Running' : '❌ Stopped'
-            const duration =
-              (raw.end.getTime() - raw.start.getTime()) / (1000 * 60 * 60) // en heures
+            const duration = (raw.end.getTime() - raw.start.getTime()) / (1000 * 60 * 60)
             const startStr = format(raw.start, 'MM/dd HH:mm', { locale: enUS })
             const endStr = format(raw.end, 'MM/dd HH:mm', { locale: enUS })
-            return [
-              `${label}`,
-              `From: ${startStr}`,
-              `To: ${endStr}`,
-              `Duration: ${duration.toFixed(1)}h`,
-            ]
+            return [label, `From: ${startStr}`, `To: ${endStr}`, `Duration: ${duration.toFixed(1)}h`]
           },
         },
       },
@@ -187,66 +157,69 @@ function GanttUptimeChart({ services, histories }) {
           drag: { enabled: true, backgroundColor: 'rgba(59,130,246,0.15)' },
           mode: 'x',
         },
-        pan: {
-          enabled: true,
-          mode: 'x',
-        },
+        pan: { enabled: true, mode: 'x' },
       },
     },
   }
 
-  // Zoom controls - fixed to work properly
-  const handleZoomIn = () => {
-    if (chartRef.current?.chart) {
-      const chart = chartRef.current.chart
-      const xAxis = chart.scales.x
-      const range = xAxis.max - xAxis.min
-      const center = (xAxis.max + xAxis.min) / 2
-      const newRange = range * 0.7 // Reduces range by 30%
-      chart.options.scales.x.min = center - newRange / 2
-      chart.options.scales.x.max = center + newRange / 2
-      chart.update('none')
+  // Applique le zoom par défaut ("les 2 derniers jours de données") UNE SEULE FOIS,
+  // au montage du graphique — le tableau de dépendances vide [] garantit que ce
+  // code ne se relance jamais aux re-rendus suivants (changement de filtre, etc.).
+  useEffect(() => {
+    const chart = chartRef.current
+    if (!chart) return
+    const max = domainRef.current.max
+    const min = Math.max(domainRef.current.min, max - TWO_DAYS_MS)
+    chart.options.scales.x.min = min
+    chart.options.scales.x.max = max
+    chart.update('none')
+  }, [])
+
+  // Contraint une plage [min, max] pour qu'elle reste dans les données réelles
+  // et qu'elle ne descende jamais sous la durée minimale visible.
+  const clampRange = (min, max) => {
+    const domain = domainRef.current
+    let newMin = Math.max(domain.min, min)
+    let newMax = Math.min(domain.max, max)
+    if (newMax - newMin < MIN_RANGE_MS) {
+      const center = (newMin + newMax) / 2
+      newMin = center - MIN_RANGE_MS / 2
+      newMax = center + MIN_RANGE_MS / 2
     }
+    return { newMin, newMax }
+  }
+
+  const applyRange = (min, max) => {
+    const chart = chartRef.current
+    if (!chart) return
+    const { newMin, newMax } = clampRange(min, max)
+    chart.options.scales.x.min = newMin
+    chart.options.scales.x.max = newMax
+    chart.update('none')
+  }
+
+  const handleZoomIn = () => {
+    const chart = chartRef.current
+    if (!chart) return
+    const { min, max } = chart.scales.x
+    const center = (max + min) / 2
+    const newRange = (max - min) * 0.7 // réduit la plage visible de 30%
+    applyRange(center - newRange / 2, center + newRange / 2)
   }
 
   const handleZoomOut = () => {
-    if (chartRef.current?.chart) {
-      const chart = chartRef.current.chart
-      const xAxis = chart.scales.x
-      const range = xAxis.max - xAxis.min
-      const center = (xAxis.max + xAxis.min) / 2
-      const newRange = range * 1.4 // Increases range by 40%
-      const newMin = Math.max(timeRange.min, center - newRange / 2)
-      const newMax = Math.min(timeRange.max, center + newRange / 2)
-      chart.options.scales.x.min = newMin
-      chart.options.scales.x.max = newMax
-      chart.update('none')
-    }
+    const chart = chartRef.current
+    if (!chart) return
+    const { min, max } = chart.scales.x
+    const center = (max + min) / 2
+    const newRange = (max - min) * 1.4 // agrandit la plage visible de 40%
+    applyRange(center - newRange / 2, center + newRange / 2)
   }
 
   const handleResetZoom = () => {
-    if (chartRef.current?.chart) {
-      const chart = chartRef.current.chart
-      chart.options.scales.x.min = initialZoom.min
-      chart.options.scales.x.max = initialZoom.max
-      chart.update('none')
-    }
-  }
-
-  // Horizontal scrollbar for navigation
-  const handleScroll = (e) => {
-    if (chartRef.current?.chart) {
-      const chart = chartRef.current.chart
-      const xAxis = chart.scales.x
-      const range = xAxis.max - xAxis.min
-      const maxScroll = timeRange.max - timeRange.min - range
-      const scrollPercent = e.currentTarget.scrollLeft / (e.currentTarget.scrollWidth - e.currentTarget.clientWidth)
-      const newMin = timeRange.min + scrollPercent * maxScroll
-      const newMax = newMin + range
-      chart.options.scales.x.min = newMin
-      chart.options.scales.x.max = newMax
-      chart.update('none')
-    }
+    const max = domainRef.current.max
+    const min = Math.max(domainRef.current.min, max - TWO_DAYS_MS)
+    applyRange(min, max)
   }
 
   return (
@@ -255,55 +228,16 @@ function GanttUptimeChart({ services, histories }) {
         📊 Service State Timeline Analysis
       </Typography>
 
-      {/* Chart container with pointer cursor */}
       <Box sx={{ height: chartHeight, cursor: 'pointer', background: 'rgba(15,23,48,0.5)', borderRadius: '8px', padding: '6px' }}>
         <Bar ref={chartRef} data={chartData} options={options} />
       </Box>
 
-      {/* Horizontal scrollbar for navigation */}
-      <Box
-        ref={containerRef}
-        onScroll={handleScroll}
-        sx={{
-          width: '100%',
-          height: '12px',
-          background: 'rgba(15,23,48,0.8)',
-          borderRadius: '4px',
-          mt: 1,
-          overflowX: 'auto',
-          overflowY: 'hidden',
-          '&::-webkit-scrollbar': {
-            height: '8px',
-          },
-          '&::-webkit-scrollbar-track': {
-            background: 'rgba(255,255,255,0.05)',
-            borderRadius: '4px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            background: 'rgba(59,130,246,0.6)',
-            borderRadius: '4px',
-            '&:hover': {
-              background: 'rgba(59,130,246,0.8)',
-            },
-          },
-        }}
-      >
-        <Box sx={{ width: '200%', height: '100%' }} />
-      </Box>
-
-      {/* Zoom control buttons */}
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 0.5, mt: 1 }}>
         <IconButton
           size="small"
           onClick={handleResetZoom}
-          sx={{
-            color: '#B0B7C3',
-            border: '1px solid rgba(255,255,255,0.2)',
-            borderRadius: '6px',
-            padding: '4px 8px',
-            '&:hover': { background: 'rgba(59,130,246,0.15)' },
-          }}
-          title="🔄 Reset zoom"
+          sx={{ color: '#B0B7C3', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', px: 1, '&:hover': { background: 'rgba(59,130,246,0.15)' } }}
+          title="🔄 Réinitialiser le zoom"
         >
           <RestartAltIcon fontSize="small" sx={{ mr: 0.3 }} />
           <span style={{ fontSize: '10px' }}>Reset</span>
@@ -311,14 +245,8 @@ function GanttUptimeChart({ services, histories }) {
         <IconButton
           size="small"
           onClick={handleZoomIn}
-          sx={{
-            color: '#B0B7C3',
-            border: '1px solid rgba(255,255,255,0.2)',
-            borderRadius: '6px',
-            padding: '4px 8px',
-            '&:hover': { background: 'rgba(59,130,246,0.15)' },
-          }}
-          title="🔍⁺ Zoom in"
+          sx={{ color: '#B0B7C3', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', px: 1, '&:hover': { background: 'rgba(59,130,246,0.15)' } }}
+          title="🔍⁺ Zoom avant"
         >
           <ZoomInIcon fontSize="small" sx={{ mr: 0.3 }} />
           <span style={{ fontSize: '10px' }}>+</span>
@@ -326,14 +254,8 @@ function GanttUptimeChart({ services, histories }) {
         <IconButton
           size="small"
           onClick={handleZoomOut}
-          sx={{
-            color: '#B0B7C3',
-            border: '1px solid rgba(255,255,255,0.2)',
-            borderRadius: '6px',
-            padding: '4px 8px',
-            '&:hover': { background: 'rgba(59,130,246,0.15)' },
-          }}
-          title="🔍⁻ Zoom out"
+          sx={{ color: '#B0B7C3', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '6px', px: 1, '&:hover': { background: 'rgba(59,130,246,0.15)' } }}
+          title="🔍⁻ Zoom arrière"
         >
           <ZoomOutIcon fontSize="small" sx={{ mr: 0.3 }} />
           <span style={{ fontSize: '10px' }}>-</span>
