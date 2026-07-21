@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { DEFAULT_USERNAME,DEFAULT_PASSWORD } from "./Login";
+import { useNavigate } from "react-router-dom";
+import { DEFAULT_USERNAME, DEFAULT_PASSWORD } from "./Login";
 import Login from "./Login";
 
 import {
@@ -22,6 +23,8 @@ const STORAGE_KEY = "service-manager-account";
 
 
 function ManageAccount() {
+
+  const navigate = useNavigate();
 
   const [savedAccount, setSavedAccount] = useState(() => {
 
@@ -227,7 +230,7 @@ function ManageAccount() {
   return (
     
       <>
-        <ReturnButton onClick={() => {}} />
+        <ReturnButton onClick={() => navigate(-1)} />
 
         <div className="flex justify-center pt-[170px]">
           <AccountCard>
